@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="jquery/jquery-3.4.1.min.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="webuploader-0.1.5/webuploader.css">
+
+    <!--引入JS-->
+    <script type="text/javascript" src="webuploader-0.1.5/webuploader.js"></script>
+
+</head>
+
+<body>
+
+    <div id="uploadimg">
+        <div id="fileList" class="uploader-list"></div>
+        <div id="imgPicker">选择图片</div>
+    </div>
+
+    <script>
+        //初始化
+        var uploader = WebUploader.create({
+            auto: true, // 选完文件后，是否自动上传  如果是false 则需要submit 提交
+            swf: 'webupload/Uploader.swf', // swf文件路径
+            server: 'http://10.204.5.9:8070/atpdc-cms/file/uploadFile', // 文件接收服务端
+            pick: '#imgPicker', // 选择文件的按钮。可选
+            fileVal: "file",
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+
+        var $list = $("#fileList");//显示上传图片的容器实例；
+        var thumbnailWidth = 200;//图片宽高
+        var thumbnailHeight = 200;
+
+        //添加之后
+        uploader.on('fileQueued', function (file) {
+            var $li = $(
+                '<div id="' + file.id + '" class="file-item thumbnail">' +
+                '<img>' +
+                '<div class="info">' + file.name + '</div>' +
+                '</div>'
+            ),
+                $img = $li.find('img');
+
+
+            // $list为容器jQuery实例
+            $list.append($li);
+
+            // 创建缩略图
+            // 如果为非图片文件，可以不用调用此方法。
+            // thumbnailWidth x thumbnailHeight 为 100 x 100
+            uploader.makeThumb(file, function (error, src) {
+                if (error) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr('src', src);
+            }, thumbnailWidth, thumbnailHeight);
+        });
+
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>
